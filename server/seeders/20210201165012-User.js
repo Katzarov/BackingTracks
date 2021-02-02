@@ -8,8 +8,8 @@ module.exports = {
       [
         {
           username: faker.internet.userName(),
-          first_name: faker.name.firstName(),
-          last_name: faker.name.lastName(),
+          firstName: faker.name.firstName(),
+          lastName: faker.name.lastName(),
           email: faker.internet.email(),
           password: "hashedpassword",
           createdAt: new Date(),

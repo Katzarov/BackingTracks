@@ -8,8 +8,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
+      // uuid: {
+      //   type: DataTypes.UUID,
+      //   defaultValue: DataTypes.UUIDV4,
+      // },
       username: {
         type: DataTypes.STRING,
+        allowNull: false,
         unique: {
           args: true,
           msg: "Username already exists.",
@@ -23,17 +28,20 @@ module.exports = (sequelize, DataTypes) => {
       },
       firstName: {
         type: DataTypes.STRING,
-        field: "first_name",
+        //field: "first_name",
         allowNull: false,
       },
       lastName: {
         type: DataTypes.STRING,
-        field: "last_name",
+        //field: "last_name",
         allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: {
+          args: true,
+          msg: "Email is already used.",
+        },        
         allowNull: false,
         validate: {
           isEmail: {
