@@ -1,15 +1,14 @@
 const express = require("express");
 const app = express();
 
-const db = require("./models/index");
+app.use(express.json());
 
-async function createServer() {
-  try {
-    await db.sequelize.authenticate();
-    await app.listen(3000);
-    console.log("listening");
-  } catch (e) {
-    console.log(e);
-  }
-}
-createServer();
+const db = require("./models/index");
+const userRoutes = require("./routes/UserRoutes");
+
+app.use("/api", userRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});
