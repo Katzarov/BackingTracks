@@ -7,10 +7,27 @@ const index = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occured.",
+        message: err.message || "Some error occured.",
       });
     });
 };
 
-module.exports = { index };
+const create = async (req, res) => {
+  const { username, firstName, lastName, email, password } = req.body;
+
+  try {
+    const user = await User.create({
+      username,
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
+    return res.json(user);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+module.exports = { index, create };

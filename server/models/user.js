@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: {
           args: true,
           msg: "Email is already used.",
-        },        
+        },
         allowNull: false,
         validate: {
           isEmail: {
@@ -53,14 +53,14 @@ module.exports = (sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          is: {
-            args: [
-              "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,32}$",
-            ],
-            msg: "Password must ...",
-          },
-        },
+        // validate: {
+        //   is: {
+        //     args: [
+        //       "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,32}$",
+        //     ],
+        //     msg: "Password must ...",
+        //   },
+        // },
       },
     },
     {
