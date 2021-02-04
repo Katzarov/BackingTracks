@@ -12,7 +12,7 @@ function hashPassword(password, salt = crypto.randomBytes(32).toString("hex")) {
 }
 
 function isSamePassword(candidate, phash, salt) {
-  return phash === hashPassword(candidate, salt);
+  return phash === hashPassword(candidate, salt).phash;
 }
 
 module.exports = { hashPassword, isSamePassword };
