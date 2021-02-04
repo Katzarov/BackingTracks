@@ -13,15 +13,14 @@ const index = (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { username, firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
     const user = await User.create({
-      username,
       firstName,
       lastName,
       email,
-      password,
+      phash: password,
     });
 
     return res.json(user);

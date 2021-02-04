@@ -1,5 +1,5 @@
 "use strict";
-const bcrypt = require("bcrypt");
+const { hashPassword } = require("../utils/passwordUtils");
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -8,41 +8,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      // uuid: {
-      //   type: DataTypes.UUID,
-      //   defaultValue: DataTypes.UUIDV4,
-      // },
-      username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: {
-          args: true,
-          msg: "Username already exists.",
-        },
-        validate: {
-          len: {
-            args: [4, 16],
-            msg: "Username must be between 4 and 16 characters long.",
-          },
-        },
-      },
       firstName: {
         type: DataTypes.STRING,
-        //field: "first_name",
         allowNull: false,
       },
       lastName: {
         type: DataTypes.STRING,
-        //field: "last_name",
         allowNull: false,
       },
       email: {
         type: DataTypes.STRING,
+        allowNull: false,
         unique: {
           args: true,
           msg: "Email is already used.",
         },
-        allowNull: false,
         validate: {
           isEmail: {
             args: true,
@@ -50,17 +30,14 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      password: {
+      phash: {
         type: DataTypes.STRING,
         allowNull: false,
-        // validate: {
-        //   is: {
-        //     args: [
-        //       "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,32}$",
-        //     ],
-        //     msg: "Password must ...",
-        //   },
-        // },
+      },
+      salt: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "0",
       },
     },
     {
@@ -70,20 +47,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  User.beforeCreate(async (user) => {
-    return bcrypt
-      .hash(user.password, 10)
-      .then((hash) => {
-        user.password = hash;
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
+  User.beforeCreate((user) => {
+    const { phash, salt } = hashPassword(user.phash);
+    user.phash = phash;
+    user.salt = salt;
   });
-
-  User.prototype.isValidPassword = async function (password) {
-    return await bcrypt.compare(password, this.password);
-  };
 
   User.sync({ force: true });
 
