@@ -7,6 +7,10 @@ app.use(express.json());
 
 const db = require("./models/index");
 
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
+
 require("dotenv").config();
 
 app.use(session({
