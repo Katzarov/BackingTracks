@@ -6,6 +6,7 @@ const router = express.Router();
 const { isAuth } = require("../routes/isAuthMiddleware");
 
 const users = require("../controllers/UserController");
+const tracks = require("../controllers/TrackController");
 
 // @route   GET api/users
 // @desc    get all users
@@ -30,5 +31,7 @@ router.get("/logout", (req, res, next) => {
   req.logout();
   res.status(200).json("Logout Successful");
 });
+
+router.post("/tracks", isAuth, tracks.create);
 
 module.exports = router;

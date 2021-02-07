@@ -4,7 +4,9 @@ const { hashPassword } = require("../utils/passwordUtils");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {}
+    static associate({ Track }) {
+      this.hasMany(Track, { foreignKey: "userId", as: "Tracks" });
+    }
 
     toJSON() {
       return {
