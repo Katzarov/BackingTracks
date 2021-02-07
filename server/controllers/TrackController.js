@@ -1,5 +1,17 @@
 const { Track } = require("../models");
 
+const index = (req, res) => {
+  Track.findAll()
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occured.",
+      });
+    });
+};
+
 const create = async (req, res) => {
   const { name, author, url, private } = req.body;
 
@@ -18,4 +30,4 @@ const create = async (req, res) => {
   }
 };
 
-module.exports = { create };
+module.exports = { index, create };

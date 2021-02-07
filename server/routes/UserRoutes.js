@@ -32,6 +32,10 @@ router.get("/logout", (req, res, next) => {
   res.status(200).json("Logout Successful");
 });
 
+router.get("/tracks", tracks.index);
+
 router.post("/tracks", isAuth, tracks.create);
+
+
 
 module.exports = router;
