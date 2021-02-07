@@ -5,9 +5,22 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {}
+
+    toJSON() {
+      return {
+        ...this.get(),
+        id: undefined,
+        salt: undefined,
+        phash: undefined,
+      };
+    }
   }
   User.init(
     {
+      uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+      },
       firstName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -36,8 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       salt: {
         type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "0",
       },
     },
     {
@@ -52,8 +63,6 @@ module.exports = (sequelize, DataTypes) => {
     user.phash = phash;
     user.salt = salt;
   });
-
-  User.sync({ force: true });
 
   return User;
 };
