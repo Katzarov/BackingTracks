@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db": "dotenv -- cross-var docker run --name %DOCKER_NAME% -e POSTGRES_DB=%DB_NAME% -e POSTGRES_USER=%DB_USER% -e POSTGRES_PASSWORD=%DB_PASSWORD% -d -p 5432:5432 postgres"
+    "db:create": "dotenv -- cross-var docker create --name %DOCKER_NAME% -e POSTGRES_DB=%DB_NAME% -e POSTGRES_USER=%DB_USER% -e POSTGRES_PASSWORD=%DB_PASSWORD% -p %DB_PORT%:%DB_PORT% postgres",
+    "db:start": "dotenv -- cross-var docker start %DOCKER_NAME%",
+    "db:client": "dotenv -- cross-var pgweb --host=%DB_HOST% --port=%DB_PORT% --user=%DB_USER% --pass=%DB_PASSWORD% --db=%DB_NAME%"
+    
   },
   "repository": {
     "type": "git",
