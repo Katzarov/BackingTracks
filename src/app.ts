@@ -9,6 +9,9 @@ const passport = require("passport");
 
 app.use(express.json());
 
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+
 const db = require("./models/index");
 
 if (process.argv[2] === "dev") {
@@ -16,8 +19,6 @@ if (process.argv[2] === "dev") {
     console.log("Drop and re-sync db.");
   });
 }
-
-require("dotenv").config();
 
 app.use(
   session({

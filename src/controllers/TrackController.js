@@ -26,7 +26,7 @@ const create = async (req, res) => {
 
     return res.json(track);
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json(err)
   }
 };
 
