@@ -11,9 +11,11 @@ app.use(express.json());
 
 const db = require("./models/index");
 
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+if (process.argv[2] === "dev") {
+  db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+  });
+}
 
 require("dotenv").config();
 
