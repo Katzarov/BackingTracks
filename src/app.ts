@@ -1,18 +1,19 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
+import cors from "cors";
 
 app.use(cors({ origin: true, credentials: true }));
 
-const session = require("express-session");
-const passport = require("passport");
+import session from "express-session";
+import passport from "passport";
 
 app.use(express.json());
 
-const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+import path from 'path';
+import dotenv from "dotenv";
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
-const db = require("./models/index");
+import db from "./models/index";
 
 if (process.argv[2] === "dev") {
   db.sequelize.sync({ force: true }).then(() => {
@@ -22,7 +23,7 @@ if (process.argv[2] === "dev") {
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -36,17 +37,18 @@ require("./config/passport");
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   console.log(req.session);
   console.log(req.user);
 
   if (req.user) {
+    //@ts-ignore
     console.log(req.user.email);
   }
   next();
 });
 
-const userRoutes = require("./routes/UserRoutes");
+import userRoutes from "./routes/UserRoutes";
 
 app.use("/api", userRoutes);
 
