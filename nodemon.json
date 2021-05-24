@@ -2,5 +2,7 @@
     "watch": ["src"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "ts-node ./src/app.ts"
+    "exec": "rm -rf ./dist && tsc && node dist/app.js"
+
   }
+     
