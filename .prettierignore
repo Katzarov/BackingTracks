@@ -1,7 +1,4 @@
 dist/
 node_modules/
 README.md
-tsconfig.json
 package-lock.json
-package.json
-.prettierrc.json

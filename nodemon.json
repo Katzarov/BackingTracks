@@ -3,6 +3,4 @@
     "ext": ".ts,.js",
     "ignore": [],
     "exec": "rm -rf ./dist && tsc && node dist/app.js"
-
-  }
-     
+}
