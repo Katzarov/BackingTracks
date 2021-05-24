@@ -1,17 +1,26 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "target": "esnext",
+        "allowJs": true,
+        "checkJs": false,
+        "sourceMap": true,
+        "strict": true,
+        "noUnusedLocals": true,                
+        "noUnusedParameters": true,            
+        "noImplicitReturns": true,             
+        "noImplicitAny": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
-        "allowJs": true,
-        "target": "es6",
-        "noImplicitAny": false,
         "moduleResolution": "node",
-        "sourceMap": true,
         "outDir": "dist",
         "baseUrl": ".",
     },
     "include": [
         "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }
