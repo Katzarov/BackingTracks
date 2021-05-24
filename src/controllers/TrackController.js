@@ -13,14 +13,13 @@ const index = (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { name, author, url, private } = req.body;
-
+  const { name, author, url, privateTrack } = req.body;
   try {
     const track = await Track.create({
       name,
       author,
       url,
-      private,
+      privateTrack,
       userId: req.user.id,
     });
 

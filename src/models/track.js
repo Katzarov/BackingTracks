@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         ...this.get(),
         id: undefined,
         userId: undefined,
-        private: undefined,
+        privateTrack: undefined,
       };
     }
   }
@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      private: {
+      privateTrack: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
