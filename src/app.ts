@@ -15,6 +15,15 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import db from "./models/index";
 
+db.sequelize
+    .authenticate()
+    .then(() => {
+        console.log("Connection to the database has been established successfully.");
+    })
+    .catch((err: any) => {
+        console.error("Unable to connect to the database:", err);
+    });
+
 if (process.argv[2] === "dev") {
     db.sequelize.sync({ force: true }).then(() => {
         console.log("Drop and re-sync db.");
