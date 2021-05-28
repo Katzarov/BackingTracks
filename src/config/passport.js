@@ -2,7 +2,7 @@ import { Strategy as JwtStrategy } from "passport-jwt";
 import { ExtractJwt } from "passport-jwt";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { User } from "../models";
+import { User } from "../models/User";
 
 const pathToKey = join(__dirname, "..", "..", "id_rsa_pub.pem");
 const PUB_KEY = readFileSync(pathToKey, "utf8");
