@@ -1,52 +1,31 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const { User } = require("../models");
-const {isSamePassword} = require("../utils/passwordUtils");
+import { Strategy as JwtStrategy } from "passport-jwt";
+import { ExtractJwt } from "passport-jwt";
+import { readFileSync } from "fs";
+import { join } from "path";
+import { User } from "../models";
 
-const customFields = {
-  usernameField: "email",
-  passwordField: "password",
+const pathToKey = join(__dirname, "..", "..", "id_rsa_pub.pem");
+const PUB_KEY = readFileSync(pathToKey, "utf8");
+
+const options = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: PUB_KEY,
+    algorithms: ["RS256"]
 };
 
-const verifyCallback = (username, password, done) => {
-  User.findOne({ where: { email: username } })
-    .then((user) => {
-      if (!user) {
-          console.log('1')
-        return done(null, false);
-      }
-
-      const isValid = isSamePassword(password, user.phash, user.salt);
-
-      console.log(isValid)
-
-      if (isValid) {
-        console.log('2')
-
-        return done(null, user);
-      } else {
-        console.log('3')
-
-        return done(null, false);
-      }
-    })
-    .catch((err) => {
-      done(err);
-    });
-};
-
-const strategy = new LocalStrategy(customFields, verifyCallback);
-
-passport.use(strategy);
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((userId, done) => {
-  User.findOne({ where: { id: userId } })
-    .then((user) => {
-      done(null, user);
-    })
-    .catch((err) => done(err));
-});
+export function passportConfig(passport) {
+    passport.use(
+        new JwtStrategy(options, function (jwt_payload, done) {
+            User.findOne({ where: { uuid: jwt_payload.sub } })
+                .then(user => {
+                    if (user) {
+                        return done(null, user);
+                    }
+                    return done(null, false);
+                })
+                .catch(err => {
+                    done(err, false);
+                });
+        })
+    );
+}
