@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { User } from "../models/User";
 
 import { isSamePassword } from "../utils/passwordUtils";
@@ -18,32 +18,28 @@ export async function create(req: Request, res: Response) {
     }
 }
 
-export async function login(req: Request, res: Response, next: NextFunction) {
-    User.findOne({ where: { email: req.body.email } })
-        //@ts-ignore
-        .then(user => {
-            if (!user) {
-                return res
-                    .status(401)
-                    .json({ success: false, msg: "No user registered with email." });
-            }
+export async function login(req: Request, res: Response) {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
 
-            const isValid = isSamePassword(req.body.password, user.phash, user.salt);
+        // user with such email not found
+        if (!user) return res.status(401).json({ success: false, msg: "Wrong email or password!" });
 
-            if (isValid) {
-                const tokenObject = issueJWT(user);
+        // password not valid
+        if (!isSamePassword(req.body.password, user.phash, user.salt))
+            return res.status(401).json({ success: false, msg: "Wrong email or password!" });
 
-                res.status(200).json({
-                    success: true,
-                    token: tokenObject.token,
-                    expiresIn: tokenObject.expires
-                });
-            } else {
-                res.status(401).json({ success: false, msg: "Wrong password." });
-            }
-        })
-        .catch((err: any) => {
-            res.status(400).json({ success: false, msg: "Bad request." });
-            next(err);
+        // found user and valid password
+        const tokenObject = issueJWT(user);
+
+        return res.status(200).json({
+            success: true,
+            token: tokenObject.token,
+            expiresIn: tokenObject.expires
         });
+    } catch (err) {
+        return res
+            .status(400)
+            .json({ success: false, msg: "Bad request or something else went wrong", detail: err });
+    }
 }
