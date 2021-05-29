@@ -3,6 +3,7 @@ import { ExtractJwt } from "passport-jwt";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { User } from "../models/User";
+import { PassportStatic } from "passport";
 
 const pathToKey = join(__dirname, "..", "..", "id_rsa_pub.pem");
 const PUB_KEY = readFileSync(pathToKey, "utf8");
@@ -13,7 +14,7 @@ const options = {
     algorithms: ["RS256"]
 };
 
-export function passportConfig(passport) {
+export function passportConfig(passport: PassportStatic) {
     passport.use(
         new JwtStrategy(options, function (jwt_payload, done) {
             User.findOne({ where: { uuid: jwt_payload.sub } })
