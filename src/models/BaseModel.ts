@@ -1,14 +1,16 @@
 import {
     BaseEntity,
     BeforeInsert,
+    BeforeUpdate,
     Column,
     CreateDateColumn,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
+import { validateOrReject } from "class-validator";
 import { v4 as uuid } from "uuid";
 
-export default abstract class Model extends BaseEntity {
+export default abstract class BaseModel extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -32,6 +34,13 @@ export default abstract class Model extends BaseEntity {
     }
 
     toJSON() {
-        return { ...this, id: undefined };
+        return { ...this, id: undefined, salt: undefined, phash: undefined };
+    }
+
+    // always validate before tyring to insert into the database
+    @BeforeInsert()
+    @BeforeUpdate()
+    async validate() {
+        await validateOrReject(this);
     }
 }
