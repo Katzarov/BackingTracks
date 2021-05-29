@@ -2,20 +2,19 @@ import {
     BaseEntity,
     BeforeInsert,
     BeforeUpdate,
-    Column,
     CreateDateColumn,
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
 import { validateOrReject } from "class-validator";
-import { v4 as uuid } from "uuid";
+// import { v4 as uuid } from "uuid";
 
 export default abstract class BaseModel extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
-
-    @Column({ type: "uuid" })
+    @PrimaryGeneratedColumn("uuid")
     uuid!: string;
+
+    // @Column({ type: "uuid" })
+    // uuid!: string;
 
     @CreateDateColumn()
     createdAt!: Date;
@@ -23,10 +22,10 @@ export default abstract class BaseModel extends BaseEntity {
     @UpdateDateColumn()
     updatedAt!: Date;
 
-    @BeforeInsert()
-    createUuid() {
-        this.uuid = uuid();
-    }
+    // @BeforeInsert()
+    // createUuid() {
+    //     this.uuid = uuid();
+    // }
 
     constructor(model?: Partial<any>) {
         super();
