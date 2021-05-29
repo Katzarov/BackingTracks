@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/User";
-import { Track } from "../models/Track";
+import { User, Track } from "../models";
 
 export async function create(req: Request, res: Response) {
     const { name, author, url, privateTrack } = req.body;

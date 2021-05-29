@@ -13,19 +13,11 @@ export default abstract class BaseModel extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     uuid!: string;
 
-    // @Column({ type: "uuid" })
-    // uuid!: string;
-
     @CreateDateColumn()
     createdAt!: Date;
 
     @UpdateDateColumn()
     updatedAt!: Date;
-
-    // @BeforeInsert()
-    // createUuid() {
-    //     this.uuid = uuid();
-    // }
 
     constructor(model?: Partial<any>) {
         super();

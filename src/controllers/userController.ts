@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/User";
+import { User } from "../models";
 
 import { isSamePassword } from "../utils/passwordUtils";
 import { issueJWT } from "../utils/jwtUtils";

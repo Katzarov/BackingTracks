@@ -27,7 +27,7 @@ export class User extends BaseModel {
     @Column({ length: 255, nullable: false })
     salt!: string;
 
-    @OneToMany(() => Track, track => track.user)
+    @OneToMany("Track", (track: Track) => track.user)
     tracks!: Track[];
 
     @BeforeInsert()

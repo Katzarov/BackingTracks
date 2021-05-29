@@ -20,6 +20,6 @@ export class Track extends BaseModel {
     @Column({ default: false })
     privateTrack!: boolean;
 
-    @ManyToOne(() => User, user => user.tracks)
+    @ManyToOne("User", (user: User) => user.tracks)
     user!: User;
 }
