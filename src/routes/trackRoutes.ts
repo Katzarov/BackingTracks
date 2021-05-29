@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const passport = require("passport");
+import passport from "passport";
 
 import { create, getTracksofUser } from "../controllers/trackController";
 
