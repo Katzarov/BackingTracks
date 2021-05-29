@@ -2,8 +2,11 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 
-const { User } = require("../models");
-const users = require("../controllers/UserController");
+import User from "../models/user";
+import { index, create } from "../controllers/UserController";
+//@ts-ignore
+// const tracks = require("../controllers/TrackController");
+
 import { isSamePassword } from "../utils/passwordUtils";
 import { issueJWT } from "../utils/jwtUtils";
 import { NextFunction, Request, Response } from "express";
@@ -16,12 +19,12 @@ router.get("/protected", passport.authenticate("jwt", { session: false }), (_req
     });
 });
 
-router.get("/users", passport.authenticate("jwt", { session: false }), users.index);
+router.get("/users", passport.authenticate("jwt", { session: false }), index);
 
 router.post("/login", function (req: Request, res: Response, next: NextFunction) {
     User.findOne({ where: { email: req.body.email } })
         //@ts-ignore
-        .then((user: any) => {
+        .then(user => {
             if (!user) {
                 return res
                     .status(401)
@@ -49,6 +52,6 @@ router.post("/login", function (req: Request, res: Response, next: NextFunction)
 });
 
 // Register a new user
-router.post("/register", users.create);
+router.post("/register", create);
 
 export default router;

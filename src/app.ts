@@ -9,8 +9,8 @@ import path from "path";
 import dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-import db from "./models/index";
-db.sequelize
+import sequelize from "./models";
+sequelize
     .authenticate()
     .then(() => {
         console.log("Connection to the database has been established successfully.");
@@ -20,7 +20,7 @@ db.sequelize
     });
 
 if (process.argv[2] === "dev") {
-    db.sequelize.sync({ force: true }).then(() => {
+    sequelize.sync({ force: true }).then(() => {
         console.log("Drop and re-sync db.");
     });
 }
