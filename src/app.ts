@@ -25,6 +25,10 @@ if (process.argv[2] === "dev") {
     });
 }
 
+// init models
+require("./models/user");
+require("./models/track");
+
 import passport from "passport";
 import { passportConfig } from "./config/passport";
 passportConfig(passport);
