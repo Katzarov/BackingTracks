@@ -17,10 +17,9 @@ import { passportConfig } from "./config/passport";
 passportConfig(passport);
 app.use(passport.initialize());
 
-import userRoutes from "./routes/userRoutes";
-import trackRoutes from "./routes/trackRoutes";
-app.use("/api", userRoutes);
-app.use("/api", trackRoutes);
+import { userRouter, trackRouter } from "./routes";
+app.use("/api", userRouter);
+app.use("/api", trackRouter);
 
 createConnection()
     .then(async () => {
