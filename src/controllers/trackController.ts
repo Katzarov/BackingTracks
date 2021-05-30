@@ -25,10 +25,10 @@ export async function getTracksofUser(req: Request, res: Response) {
     console.log(userUuid);
 
     try {
-        const users = await User.find({ relations: ["tracks"], where: { uuid: userUuid } });
-        // const tracks = await User.find({ relations: ["user"] });
+        // const users = await User.find({ relations: ["tracks"], where: { uuid: userUuid } });
+        const tracks = await Track.find({ relations: ["user"], where: { user: userUuid } });
 
-        return res.json(users);
+        return res.json(tracks);
     } catch (err) {
         return res.status(500).json(err);
     }
