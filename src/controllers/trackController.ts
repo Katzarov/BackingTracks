@@ -27,9 +27,15 @@ export async function getTracksofUser(req: Request, res: Response) {
     try {
         // const users = await User.find({ relations: ["tracks"], where: { uuid: userUuid } });
         const tracks = await Track.find({ relations: ["user"], where: { user: userUuid } });
+        // const t = await getConnection()
+        //     .createQueryBuilder()
+        //     .select("users.firstName")
+        //     .from(User, "users")
+        //     .getOne();
 
         return res.json(tracks);
     } catch (err) {
+        console.log(err);
         return res.status(500).json(err);
     }
 }

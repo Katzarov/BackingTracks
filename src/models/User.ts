@@ -3,7 +3,7 @@ import { Entity, Column, BeforeInsert, OneToMany } from "typeorm";
 import { hashPassword } from "../utils/passwordUtils";
 
 import BaseModel from "./BaseModel";
-import { Track } from "./Track";
+import { Track, Playlist } from ".";
 
 @Entity("users")
 export class User extends BaseModel {
@@ -29,6 +29,9 @@ export class User extends BaseModel {
 
     @OneToMany("Track", (track: Track) => track.user)
     tracks!: Track[];
+
+    @OneToMany("Playlist", (playlist: Playlist) => playlist.user)
+    playlists!: Playlist[];
 
     @BeforeInsert()
     hashPassword() {

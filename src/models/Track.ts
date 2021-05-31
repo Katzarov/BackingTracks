@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne } from "typeorm";
 import { Length } from "class-validator";
 import BaseModel from "./BaseModel";
-import { User } from "./User";
+import { User, Playlist } from ".";
 
 @Entity("tracks")
 export class Track extends BaseModel {
@@ -22,4 +22,7 @@ export class Track extends BaseModel {
 
     @ManyToOne("User", (user: User) => user.tracks)
     user!: User;
+
+    @ManyToOne("Playlist", (playlist: Playlist) => playlist.tracks)
+    playlist!: Playlist;
 }
