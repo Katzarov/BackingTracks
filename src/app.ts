@@ -1,67 +1,30 @@
 import express from "express";
 const app = express();
-import cors from "cors";
-
-app.use(cors({ origin: true, credentials: true }));
-
-import session from "express-session";
-import passport from "passport";
-
 app.use(express.json());
+
+import cors from "cors";
+app.use(cors({ origin: true, credentials: true }));
 
 import path from "path";
 import dotenv from "dotenv";
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(path.resolve(), "../.env") });
 
-import db from "./models/index";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
 
-db.sequelize
-    .authenticate()
-    .then(() => {
-        console.log("Connection to the database has been established successfully.");
-    })
-    .catch((err: any) => {
-        console.error("Unable to connect to the database:", err);
-    });
-
-if (process.argv[2] === "dev") {
-    db.sequelize.sync({ force: true }).then(() => {
-        console.log("Drop and re-sync db.");
-    });
-}
-
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET!,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24 // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
-        }
-    })
-);
-
-require("./config/passport");
-
+import passport from "passport";
+import { passportConfig } from "./config/passport";
+passportConfig(passport);
 app.use(passport.initialize());
-app.use(passport.session());
 
-app.use((req, _res, next) => {
-    console.log(req.session);
-    console.log(req.user);
+import { userRouter, trackRouter } from "./routes";
+app.use("/api", userRouter);
+app.use("/api", trackRouter);
 
-    if (req.user) {
-        //@ts-ignore
-        console.log(req.user.email);
-    }
-    next();
-});
-
-import userRoutes from "./routes/UserRoutes";
-
-app.use("/api", userRoutes);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-});
+createConnection()
+    .then(async () => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is running on port ${process.env.PORT}.`);
+        });
+    })
+    .catch(error => console.log(error));
