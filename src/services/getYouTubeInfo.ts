@@ -1,5 +1,5 @@
-const fs = require("fs");
-const ytdl = require("ytdl-core");
+import fs from "fs";
+import ytdl from "ytdl-core";
 
 const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
 
@@ -43,28 +43,29 @@ const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
 //     });
 // }
 
-async function getFormats(url) {
-    return new Promise(function (resolve, reject) {
+async function getFormats(url: string): Promise<ytdl.videoFormat[]> {
+    return new Promise(function (resolve, _reject) {
         ytdl.getInfo(url).then(info => {
-            const formats = info.formats;
-            formats.map(format => console.log(format.itag, format.audioBitrate, format.mimeType));
-
-            resolve(formats);
+            resolve(info.formats);
         });
     });
 }
 
-function chooseFormatAuto(formats) {
+function logFormats(formats: ytdl.videoFormat[]) {
+    formats.map(format => console.log(format.itag, format.audioBitrate, format.mimeType));
+}
+
+function chooseFormatAuto(formats: ytdl.videoFormat[]): ytdl.videoFormat {
     const format = ytdl.chooseFormat(formats, { quality: "highestaudio" });
     return format;
 }
 
-function chooseFormatManually(formats) {
-    const format = ytdl.chooseFormat(formats, { quality: 18 });
+function chooseFormatManually(formats: ytdl.videoFormat[]): ytdl.videoFormat {
+    const format = ytdl.chooseFormat(formats, { quality: 251 });
     return format;
 }
 
-function downloadFromFormat(url, format) {
+function downloadFromFormat(url: string, format: ytdl.videoFormat): void {
     const stream = ytdl(url, { format: format });
 
     stream.pipe(fs.createWriteStream(`public/test3.mp4`));
@@ -72,6 +73,7 @@ function downloadFromFormat(url, format) {
 
 async function main() {
     const formats = await getFormats(url);
+    logFormats(formats);
     const formatAuto = chooseFormatAuto(formats);
     console.log(formatAuto);
     const formatManual = chooseFormatManually(formats);
