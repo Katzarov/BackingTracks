@@ -7,33 +7,24 @@ app.use(cors({ origin: true, credentials: true }));
 
 import path from "path";
 import dotenv from "dotenv";
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config({ path: path.resolve(path.resolve(), "../.env") });
 
-import db from "./models/index";
-db.sequelize
-    .authenticate()
-    .then(() => {
-        console.log("Connection to the database has been established successfully.");
-    })
-    .catch((err: any) => {
-        console.error("Unable to connect to the database:", err);
-    });
-
-if (process.argv[2] === "dev") {
-    db.sequelize.sync({ force: true }).then(() => {
-        console.log("Drop and re-sync db.");
-    });
-}
+import "reflect-metadata";
+import { createConnection } from "typeorm";
 
 import passport from "passport";
 import { passportConfig } from "./config/passport";
 passportConfig(passport);
 app.use(passport.initialize());
 
-import userRoutes from "./routes/UserRoutes";
-app.use("/api", userRoutes);
+import { userRouter, trackRouter } from "./routes";
+app.use("/api", userRouter);
+app.use("/api", trackRouter);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
-});
+createConnection()
+    .then(async () => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is running on port ${process.env.PORT}.`);
+        });
+    })
+    .catch(error => console.log(error));
