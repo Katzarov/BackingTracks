@@ -1,7 +1,8 @@
 import fs from "fs";
-import ytdl from "ytdl-core";
+import ytdl, { videoFormat, chooseFormat } from "ytdl-core";
 
-const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
+// const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
+const url = "https://www.youtube.com/watch?v=J2npVg9ONFo";
 
 // ytdl.getInfo(url).then(info => {
 //     const formats = info.formats;
@@ -43,31 +44,30 @@ const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
 //     });
 // }
 
-async function getFormats(url: string): Promise<ytdl.videoFormat[]> {
-    return new Promise(function (resolve, _reject) {
-        ytdl.getInfo(url).then(info => {
-            resolve(info.formats);
-        });
+async function getFormats(url: string): Promise<videoFormat[]> {
+    return new Promise(function (resolve, reject) {
+        ytdl.getInfo(url)
+            .then(info => {
+                resolve(info.formats);
+            })
+            .catch(err => reject(err));
     });
 }
 
-function logFormats(formats: ytdl.videoFormat[]) {
+function logFormats(formats: videoFormat[]): void {
     formats.map(format => console.log(format.itag, format.audioBitrate, format.mimeType));
 }
 
-function chooseFormatAuto(formats: ytdl.videoFormat[]): ytdl.videoFormat {
-    const format = ytdl.chooseFormat(formats, { quality: "highestaudio" });
-    return format;
+function chooseFormatAuto(formats: videoFormat[]): videoFormat {
+    return chooseFormat(formats, { quality: "highestaudio" });
 }
 
-function chooseFormatManually(formats: ytdl.videoFormat[]): ytdl.videoFormat {
-    const format = ytdl.chooseFormat(formats, { quality: 251 });
-    return format;
+function chooseFormatManually(formats: videoFormat[], itag: number): videoFormat {
+    return chooseFormat(formats, { quality: itag });
 }
 
-function downloadFromFormat(url: string, format: ytdl.videoFormat): void {
+function downloadFromFormat(url: string, format: videoFormat): void {
     const stream = ytdl(url, { format: format });
-
     stream.pipe(fs.createWriteStream(`public/test3.mp4`));
 }
 
@@ -76,8 +76,10 @@ async function main() {
     logFormats(formats);
     const formatAuto = chooseFormatAuto(formats);
     console.log(formatAuto);
-    const formatManual = chooseFormatManually(formats);
+    const itag = 251;
+    const formatManual = chooseFormatManually(formats, itag);
     console.log(formatManual);
     downloadFromFormat(url, formatManual);
 }
+
 main();
