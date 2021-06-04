@@ -1,5 +1,16 @@
 import { Request, Response } from "express";
 import { User, Track } from "../models";
+import {
+    getInfo,
+    getFormatsForClient,
+    getFormats,
+    getMetadata,
+    chooseFormatAuto,
+    chooseFormatManually,
+    getDownloadStream
+} from "../services/youtubeUtils";
+import { convertStream } from "../services/streamConverterUtils";
+import fs from "fs";
 
 export async function create(req: Request, res: Response) {
     const { name, author, url, privateTrack } = req.body;
@@ -34,6 +45,44 @@ export async function getTracksofUser(req: Request, res: Response) {
         //     .getOne();
 
         return res.json(tracks);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}
+
+export async function getYouTubeTrackInfo(req: Request, res: Response) {
+    const { url } = req.body;
+    try {
+        const info = await getInfo(url);
+        const metaData = getMetadata(info);
+        const formats = getFormats(info);
+        const formatsPresent = getFormatsForClient(formats);
+        const chosenFormat = chooseFormatAuto(formats).itag;
+
+        return res.json({ metaData, formatsPresent, chosenFormat });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+}
+
+export async function downloadYouTubeTrack(req: Request, res: Response) {
+    const { url, itag } = req.body;
+    try {
+        const info = await getInfo(url);
+        const metaData = getMetadata(info);
+
+        const formats = getFormats(info);
+        const chosenFormat = chooseFormatManually(formats, itag);
+
+        const downloadSteam = getDownloadStream(url, chosenFormat);
+
+        const convertedStream = convertStream(downloadSteam);
+
+        convertedStream.pipe(fs.createWriteStream(`public/${metaData.title}.mp3`));
+
+        return res.status(200).json({ success: true });
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
