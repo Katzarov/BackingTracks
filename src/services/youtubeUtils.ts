@@ -1,5 +1,5 @@
 import { Readable } from "stream";
-import ytdl, { videoFormat, chooseFormat, videoInfo } from "ytdl-core";
+import ytdl, { videoFormat, chooseFormat, videoInfo, filterFormats } from "ytdl-core";
 
 // const url = "https://www.youtube.com/watch?v=fRv2Bxbngws";
 // const url = "https://www.youtube.com/watch?v=J2npVg9ONFo";
@@ -59,7 +59,7 @@ export function getMetadata(info: videoInfo) {
 }
 
 export function getFormats(info: videoInfo): videoFormat[] {
-    return info.formats;
+    return filterFormats(info.formats, "audio");
 }
 
 export function getFormatsForClient(formats: videoFormat[]) {
