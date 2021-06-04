@@ -1,11 +1,10 @@
-import { PassThrough, Readable } from "stream";
+import { Transform, Readable } from "stream";
 
 import ffmpeg from "fluent-ffmpeg";
 import readline from "readline";
 
-export function convertStream(stream: Readable): PassThrough {
+export function convertStream(stream: Readable): Transform {
     let start = Date.now();
-    //@ts-ignore
     return ffmpeg(stream)
         .format("mp3")
         .audioCodec("libmp3lame")
@@ -21,5 +20,5 @@ export function convertStream(stream: Readable): PassThrough {
         .on("error", function (err, _stdout, _stderr) {
             console.log("Cannot process video: " + err.message);
         })
-        .pipe();
+        .pipe() as Transform;
 }
