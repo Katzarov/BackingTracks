@@ -10,7 +10,11 @@ import {
     getDownloadStream
 } from "../services/youtubeUtils";
 import { convertStream } from "../services/streamConverterUtils";
-import fs from "fs";
+import { getSaveStream } from "../services/streamIoUtils";
+
+import stream from "stream";
+
+import { promisify } from "util";
 
 export async function create(req: Request, res: Response) {
     const { name, author, url, privateTrack } = req.body;
@@ -69,6 +73,8 @@ export async function getYouTubeTrackInfo(req: Request, res: Response) {
 
 export async function downloadYouTubeTrack(req: Request, res: Response) {
     const { url, itag } = req.body;
+    const pipeline = promisify(stream.pipeline);
+
     try {
         const info = await getInfo(url);
         const metaData = getMetadata(info);
@@ -76,11 +82,11 @@ export async function downloadYouTubeTrack(req: Request, res: Response) {
         const formats = getFormats(info);
         const chosenFormat = chooseFormatManually(formats, itag);
 
-        const downloadSteam = getDownloadStream(url, chosenFormat);
-
-        const convertedStream = convertStream(downloadSteam);
-
-        convertedStream.pipe(fs.createWriteStream(`public/${metaData.title}.mp3`));
+        await pipeline(
+            getDownloadStream(url, chosenFormat),
+            convertStream,
+            getSaveStream(metaData.title)
+        );
 
         return res.status(200).json({ success: true });
     } catch (err) {
