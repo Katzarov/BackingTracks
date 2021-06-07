@@ -55,7 +55,11 @@ export async function getInfo(url: string): Promise<videoInfo> {
 }
 
 export function getMetadata(info: videoInfo) {
-    return { title: info.videoDetails.title, rating: info.videoDetails.averageRating };
+    return {
+        title: info.videoDetails.title,
+        author: info.videoDetails.author.name,
+        rating: info.videoDetails.averageRating
+    };
 }
 
 export function getFormats(info: videoInfo): videoFormat[] {
